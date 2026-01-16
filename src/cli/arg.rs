@@ -34,7 +34,6 @@ pub struct Args {
         long,
         default_value = "C:/Users/$UserName/Documents/Paradox Interactive/Stellaris/mod"
     )]
-    mod_path: String,
 
     /// Path to the resource directory
     #[arg(short, long, default_value = "res")]
@@ -47,15 +46,15 @@ pub struct Args {
     /// Language of the output files
     #[arg(short, long, value_enum, default_value_t = Language::Zh)]
     language: Language,
+
+    /// Whether to convert GFX files
+    #[arg(short, long, default_value_t = false)]
+    convert_gfx: bool,
 }
 
 impl Args {
     pub fn stellaris_path(&self) -> &str {
         &self.stellaris_path
-    }
-
-    pub fn mod_path(&self) -> &str {
-        &self.mod_path
     }
 
     pub fn resource_path(&self) -> &str {
@@ -68,6 +67,10 @@ impl Args {
 
     pub fn language(&self) -> &str {
         self.language.as_str()
+    }
+
+    pub fn convert_gfx(&self) -> bool {
+        self.convert_gfx
     }
 }
 

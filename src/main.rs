@@ -30,11 +30,13 @@ fn main() {
     );
     config.display();
 
-    // let stellaris_gfx_path = Path::new(config.stellaris_path()).join(config.gfx_dir());
-    // let output_gfx_path = Path::new(config.output_path()).join(config.output_gfx_dir());
+    if args.convert_gfx() {
+        let stellaris_gfx_path = Path::new(config.stellaris_path()).join(config.gfx_dir());
+        let output_gfx_path = Path::new(config.output_path()).join(config.output_gfx_dir());
 
-    // println!("Stellaris GFX Path: {:?}", stellaris_gfx_path);
-    // println!("Output GFX Path: {:?}", output_gfx_path);
+        println!("Stellaris GFX Path: {:?}", stellaris_gfx_path);
+        println!("Output GFX Path: {:?}", output_gfx_path);
 
-    // core::image::convert_dds_to_png(&stellaris_gfx_path, &output_gfx_path);
+        core::image::convert_dds_to_png(&stellaris_gfx_path, &output_gfx_path);
+    }
 }
