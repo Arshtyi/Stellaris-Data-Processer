@@ -1,0 +1,20 @@
+# Default arguments which is hardcoded into the application.These values will be overridden by cli args.
+# stellaris_path:"C:/Program Files (x86)/Steam/steamapps/common/Stellaris"
+# resource_path:"res"
+# output_path:"output"
+# language:"zh"
+
+##############################################################################
+
+# Top level directories inside the stellaris_path
+common_dir: "common"
+events_dir: "events"
+localisation_dir: "localisation"
+gfx_dir: "gfx"
+
+# Different localisation directories inside the localisation_dir
+en_dir: "english"
+zh_dir: "simp_chinese"
+
+# All output directories inside the output_path
+output_gfx_dir: "gfx"

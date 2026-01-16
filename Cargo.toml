@@ -1,0 +1,15 @@
+[package]
+name = "stellaris-data-processer"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.5.54", features = ["derive"] }
+jomini = "0.34.0"
+shellexpand = "3.1.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml_bw = "2.5"
+image = "0.25.9"
+image_dds = "0.7"
+walkdir = "2.5.0"
+ddsfile = "0.5.2"
