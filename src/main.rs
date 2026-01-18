@@ -26,7 +26,6 @@ fn main() {
                 helper::safely_exit(&format!("Error resolving/creating output path: {}", e), 1);
             }
         },
-        args.language().to_string(),
     );
     config.display();
 
@@ -39,4 +38,19 @@ fn main() {
 
         core::image::convert_dds_to_png(&stellaris_gfx_path, &output_gfx_path);
     }
+
+    let localisation_map = core::localisation::load_localisation(&config);
+    println!("Loaded {} localisation keys", localisation_map.len());
+
+    let achievements = core::achievement::process_achievements(&config, &localisation_map);
+    println!("Parsed {} achievements", achievements.len());
+
+    let output_json_path = Path::new(config.output_path()).join(config.output_json_dir());
+    if !output_json_path.exists() {
+        std::fs::create_dir_all(&output_json_path).expect("Failed to create output JSON directory");
+    }
+    let achievements_json_path = output_json_path.join("achievements.json");
+    let json_file = std::fs::File::create(&achievements_json_path).expect("Failed to create achievements.json");
+    serde_json::to_writer_pretty(json_file, &achievements).expect("Failed to write achievements.json");
+    println!("Saved achievements to {:?}", achievements_json_path);
 }

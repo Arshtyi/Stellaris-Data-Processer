@@ -18,3 +18,13 @@ zh_dir: "simp_chinese"
 
 # All output directories inside the output_path
 output_gfx_dir: "gfx"
+output_json_dir: "json"
+
+# All reflex of the folders in common_dir
+achievements:
+  - "achievements.txt"
+arguments:
+  - "agreement_term_values"
+  - "agreement_presets"
+  - "agreement_resources"
+  - "agreement_terms"

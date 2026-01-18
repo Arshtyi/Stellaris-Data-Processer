@@ -10,13 +10,14 @@ struct YamlConfig {
     en_dir: String,
     zh_dir: String,
     output_gfx_dir: String,
+    output_json_dir: String,
+    achievements: Vec<String>,
 }
 
 pub struct Config {
     stellaris_path: String,
     resource_path: String,
     output_path: String,
-    language: String,
     common_dir: String,
     events_dir: String,
     localisation_dir: String,
@@ -24,15 +25,13 @@ pub struct Config {
     en_dir: String,
     zh_dir: String,
     output_gfx_dir: String,
+    output_json_dir: String,
+    achievements: Vec<String>,
+    game_version: String,
 }
 
 impl Config {
-    pub fn new(
-        stellaris_path: String,
-        resource_path: String,
-        output_path: String,
-        language: String,
-    ) -> Self {
+    pub fn new(stellaris_path: String, resource_path: String, output_path: String) -> Self {
         let config_path = std::path::Path::new(&resource_path).join("config.yml");
         let content = std::fs::read_to_string(&config_path).unwrap_or_else(|e| {
             helper::safely_exit(
@@ -49,11 +48,24 @@ impl Config {
             helper::safely_exit(&format!("Failed to parse config file: {}", e), 1);
         });
 
+        let launcher_settings_path =
+            std::path::Path::new(&stellaris_path).join("launcher-settings.json");
+        let mut game_version = String::from("Unknown");
+        if launcher_settings_path.exists() {
+            if let Ok(content) = std::fs::read_to_string(&launcher_settings_path) {
+                if let Ok(json) = serde_json::from_str::<serde_json::Value>(&content) {
+                    if let Some(ver) = json.get("rawVersion").and_then(|v| v.as_str()) {
+                        game_version = ver.trim_start_matches('v').to_string();
+                        // println!("Detected Stellaris version: {}", game_version);
+                    }
+                }
+            }
+        }
+
         Config {
             stellaris_path,
             resource_path,
             output_path,
-            language,
             common_dir: yaml_config.common_dir,
             events_dir: yaml_config.events_dir,
             localisation_dir: yaml_config.localisation_dir,
@@ -61,7 +73,14 @@ impl Config {
             en_dir: yaml_config.en_dir,
             zh_dir: yaml_config.zh_dir,
             output_gfx_dir: yaml_config.output_gfx_dir,
+            output_json_dir: yaml_config.output_json_dir,
+            achievements: yaml_config.achievements,
+            game_version,
         }
+    }
+
+    pub fn game_version(&self) -> &str {
+        &self.game_version
     }
 
     pub fn stellaris_path(&self) -> &str {
@@ -77,10 +96,6 @@ impl Config {
     }
 
     pub fn language(&self) -> &str {
-        &self.language
-    }
-
-    pub fn common_dir(&self) -> &str {
         &self.common_dir
     }
 
@@ -104,21 +119,31 @@ impl Config {
         &self.zh_dir
     }
 
+    pub fn common_dir(&self) -> &str {
+        &self.common_dir
+    }
+
     pub fn output_gfx_dir(&self) -> &str {
         &self.output_gfx_dir
+    }
+    pub fn output_json_dir(&self) -> &str {
+        &self.output_json_dir
+    }
+
+    pub fn achievements(&self) -> &Vec<String> {
+        &self.achievements
     }
 
     pub fn display(&self) {
         println!("Basic Configuration:");
         println!("  Stellaris Path: {}", self.stellaris_path);
+        println!("  Game Version: {}", self.game_version);
         println!("  Resource Path: {}", self.resource_path);
         println!("  Output Path: {}", self.output_path);
-        println!("  Language: {}", self.language);
         // println!("  Common Dir: {}", self.common_dir);
         // println!("  Events Dir: {}", self.events_dir);
         // println!("  Localisation Dir: {}", self.localisation_dir);
         // println!("  Gfx Dir: {}", self.gfx_dir);
-        // println!("  En Dir: {}", self.en_dir);
         // println!("  Zh Dir: {}", self.zh_dir);
         // println!("  Output Gfx Dir: {}", self.output_gfx_dir);
     }
